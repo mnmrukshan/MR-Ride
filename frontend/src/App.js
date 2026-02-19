@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css'; 
-import Home from './Home'; // අපි හදපු අලුත් Home පිටුව
+import Home from './Home'; // Importing the Home component
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRegister, setIsRegister] = useState(false);
-  const navigate = useNavigate(); // පිටු මාරු කරන්න පාවිච්චි කරන tool එක
+  const navigate = useNavigate(); // Tool used for page navigation
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Register ද Login ද කියලා බලලා URL එක තෝරනවා
+    // Selecting the URL based on Register or Login mode
     const url = isRegister ? "http://localhost:5000/register" : "http://localhost:5000/login";
 
     try {
       const response = await axios.post(url, { email, password });
       alert(response.data.message);
       
-      // සාර්ථකව Login වුණොත් විතරක් Dashboard (Home) එකට යවනවා
+      // Navigate to Dashboard (Home) only if Login is successful
       if (!isRegister && response.status === 200) {
         navigate("/home");
       }
     } catch (error) {
-      alert("වැරදියි: " + (error.response ? error.response.data.message : "Server එක වැඩ නැත!"));
+      alert("Error: " + (error.response ? error.response.data.message : "Server is not responding!"));
     }
   };
 
@@ -83,7 +83,7 @@ function LoginPage() {
   );
 }
 
-// මුළු App එකම Router එක ඇතුළේ තියන්න ඕනේ
+// Main App component wrapped in Router
 function App() {
   return (
     <Router>

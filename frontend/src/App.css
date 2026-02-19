@@ -1,10 +1,10 @@
-/* මුළු screen එකම ලස්සන කරන්න */
+/* Styling the main viewport */
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #0b2225; /* තද කොළ/නිල් පාටක් */
+  background-color: #0b2225; /* Dark teal/blue background */
   font-family: 'Poppins', sans-serif;
 }
 
@@ -23,7 +23,7 @@ h2 {
   text-transform: uppercase;
 }
 
-/* Input එක වටේ තියෙන box එක */
+/* Container for input fields */
 .input-group {
   position: relative;
   margin-bottom: 30px;
@@ -31,7 +31,7 @@ h2 {
   align-items: center;
 }
 
-/* Icon එක තියෙන සුදු වටකුරු කොටස */
+/* White circle for the input icon */
 .icon-circle {
   position: absolute;
   left: 0;
@@ -51,10 +51,10 @@ h2 {
   font-size: 22px;
 }
 
-/* ඇත්තම Input එක */
+/* Styled text input field */
 .styled-input {
   width: 100%;
-  padding: 15px 20px 15px 70px; /* Icon එකට ඉඩ තැබීම */
+  padding: 15px 20px 15px 70px; /* Space for the icon */
   background-color: rgba(255, 255, 255, 0.15); /* Transparent white */
   border: none;
   border-radius: 35px;
@@ -67,7 +67,7 @@ h2 {
   color: #aaa;
 }
 
-/* Login Button එක */
+/* Primary Login Button */
 .login-btn {
   width: 100%;
   padding: 15px;
@@ -88,11 +88,12 @@ h2 {
   transform: scale(1.03);
 }
 
-/* Password එකේ Icon එක දකුණු පැත්තට දාන්න ඕන නම් */
+/* Positioning for the password icon on the right */
 .right-icon {
   left: auto !important;
   right: 0 !important;
 }
+
 .input-right {
   padding: 15px 70px 15px 25px !important;
 }
