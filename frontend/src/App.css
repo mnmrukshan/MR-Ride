@@ -1,0 +1,98 @@
+/* මුළු screen එකම ලස්සන කරන්න */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #0b2225; /* තද කොළ/නිල් පාටක් */
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  padding: 20px;
+}
+
+h2 {
+  color: white;
+  letter-spacing: 3px;
+  margin-bottom: 50px;
+  font-size: 28px;
+  text-transform: uppercase;
+}
+
+/* Input එක වටේ තියෙන box එක */
+.input-group {
+  position: relative;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+}
+
+/* Icon එක තියෙන සුදු වටකුරු කොටස */
+.icon-circle {
+  position: absolute;
+  left: 0;
+  width: 55px;
+  height: 55px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.icon-circle i {
+  color: #333;
+  font-size: 22px;
+}
+
+/* ඇත්තම Input එක */
+.styled-input {
+  width: 100%;
+  padding: 15px 20px 15px 70px; /* Icon එකට ඉඩ තැබීම */
+  background-color: rgba(255, 255, 255, 0.15); /* Transparent white */
+  border: none;
+  border-radius: 35px;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.styled-input::placeholder {
+  color: #aaa;
+}
+
+/* Login Button එක */
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 35px;
+  border: none;
+  background-color: white;
+  color: #0b2225;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 20px;
+  text-transform: uppercase;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.03);
+}
+
+/* Password එකේ Icon එක දකුණු පැත්තට දාන්න ඕන නම් */
+.right-icon {
+  left: auto !important;
+  right: 0 !important;
+}
+.input-right {
+  padding: 15px 70px 15px 25px !important;
+}
