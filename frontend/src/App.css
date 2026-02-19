@@ -1,99 +1,96 @@
-/* Styling the main viewport */
+/* Styling the main viewport with a modern gradient background */
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #0b2225; /* Dark teal/blue background */
+  background: linear-gradient(135deg, #0b2225 0%, #1a4a4e 100%);
   font-family: 'Poppins', sans-serif;
 }
 
+/* Glassmorphism Card Effect */
 .login-card {
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   text-align: center;
-  padding: 20px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.05); /* Transparent background */
+  backdrop-filter: blur(15px); /* The "Glass" blur effect */
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 h2 {
   color: white;
-  letter-spacing: 3px;
-  margin-bottom: 50px;
-  font-size: 28px;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  font-size: 24px;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
-/* Container for input fields */
+/* Input group styling */
 .input-group {
   position: relative;
-  margin-bottom: 30px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 25px;
 }
 
-/* White circle for the input icon */
-.icon-circle {
-  position: absolute;
-  left: 0;
-  width: 55px;
-  height: 55px;
-  background-color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.icon-circle i {
-  color: #333;
-  font-size: 22px;
-}
-
-/* Styled text input field */
+/* Styled text input field with glass effect */
 .styled-input {
   width: 100%;
-  padding: 15px 20px 15px 70px; /* Space for the icon */
-  background-color: rgba(255, 255, 255, 0.15); /* Transparent white */
-  border: none;
-  border-radius: 35px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
   color: white;
   font-size: 16px;
   outline: none;
+  transition: 0.3s;
+}
+
+.styled-input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #00ffcc;
 }
 
 .styled-input::placeholder {
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Primary Login Button */
 .login-btn {
   width: 100%;
   padding: 15px;
-  border-radius: 35px;
+  border-radius: 12px;
   border: none;
-  background-color: white;
+  background: #00ffcc; /* Bright accent color */
   color: #0b2225;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
   text-transform: uppercase;
-  transition: 0.3s;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
 }
 
 .login-btn:hover {
-  background-color: #e0e0e0;
-  transform: scale(1.03);
+  background: #00ccaa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 204, 0.4);
 }
 
-/* Positioning for the password icon on the right */
-.right-icon {
-  left: auto !important;
-  right: 0 !important;
+.switch-text {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
 }
 
-.input-right {
-  padding: 15px 70px 15px 25px !important;
+.link {
+  color: #00ffcc;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
 }
