@@ -11,6 +11,8 @@ function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
 
+  const accentColor = "#00d1b2"; // Your theme emerald color
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = isRegister ? "http://localhost:5000/register" : "http://localhost:5000/login";
@@ -32,6 +34,25 @@ function LoginPage() {
       const errorMsg = error.response ? error.response.data.message : "Server Connection Failed";
       alert("Error: " + errorMsg);
     }
+  };
+
+  // Modern Glassy Button Style
+  const glassButtonStyle = {
+    width: '100%',
+    padding: '14px',
+    borderRadius: '15px',
+    border: `1px solid ${accentColor}`,
+    background: 'rgba(0, 209, 178, 0.1)',
+    color: accentColor,
+    fontSize: '1.1rem',
+    fontWeight: '900',
+    cursor: 'pointer',
+    backdropFilter: 'blur(5px)',
+    transition: 'all 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    marginTop: '20px',
+    outline: 'none'
   };
 
   return (
@@ -64,14 +85,37 @@ function LoginPage() {
               required 
             />
           </div>
-          <button type="submit" className="login-btn">
+
+          {/* Optimized Glassmorphism Button */}
+          <button 
+            type="submit" 
+            style={glassButtonStyle}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = accentColor;
+              e.target.style.color = '#071618';
+              e.target.style.boxShadow = `0 0 25px ${accentColor}88`;
+              e.target.style.transform = 'translateY(-2px)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'rgba(0, 209, 178, 0.1)';
+              e.target.style.color = accentColor;
+              e.target.style.boxShadow = 'none';
+              e.target.style.transform = 'translateY(0)';
+            }}
+            onMouseDown={(e) => e.target.style.transform = 'scale(0.96)'}
+            onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+          >
             {isRegister ? "Register Now" : "Sign In"}
           </button>
         </form>
 
         <p className="switch-text">
           {isRegister ? "Already have an account? " : "New to MR Ride? "}
-          <span className="link" onClick={() => setIsRegister(!isRegister)}>
+          <span 
+            className="link" 
+            style={{ color: accentColor, fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => setIsRegister(!isRegister)}
+          >
             {isRegister ? "Login here" : "Get started today"}
           </span>
         </p>
