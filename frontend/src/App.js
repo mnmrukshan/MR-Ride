@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css'; 
 import Home from './Home'; 
+import myLogo from './logo1.png'; 
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,26 +13,34 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Choosing the endpoint based on whether the user is registering or logging in
     const url = isRegister ? "http://localhost:5000/register" : "http://localhost:5000/login";
 
     try {
       const response = await axios.post(url, { email, password });
-      alert(response.data.message);
       
-      // Navigate to Home dashboard only on successful login
+      if (isRegister) {
+        alert("Registration Successful! Please login.");
+      } else {
+        alert("Login Successful!");
+      }
+      
       if (!isRegister && response.status === 200) {
+        localStorage.setItem("userName", email.split('@')[0]); 
         navigate("/home");
       }
     } catch (error) {
-      alert("Error: " + (error.response ? error.response.data.message : "Server is not reachable"));
+      const errorMsg = error.response ? error.response.data.message : "Server Connection Failed";
+      alert("Error: " + errorMsg);
     }
   };
 
   return (
     <div className="main-container">
       <div className="login-card">
-        {/* Changed the heading text to User Login */}
+        <div className="logo-container" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <img src={myLogo} alt="MR Ride Logo" style={{ width: '100px', height: 'auto' }} />
+        </div>
+
         <h2>{isRegister ? "Create Your Account" : "User Login"}</h2>
         
         <form onSubmit={handleSubmit}>
