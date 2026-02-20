@@ -10,48 +10,47 @@ app.use(cors());
 
 // MongoDB connection
 mongoose.connect('mongodb://127.0.0.1:27017/loginDB')
-    .then(() => console.log("Database එකට සාර්ථකව සම්බන්ධ වුණා!"))
-    .catch(err => console.log("Error එකක් ආවා:", err));
+    .then(() => console.log("Database connected successfully!"))
+    .catch(err => console.log("Connection error:", err));
 
-// --- User Model එක (මේක අනිවාර්යයෙන්ම ඕනේ) ---
+// --- User Model ---
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
 const User = mongoose.model('User', UserSchema);
 
-// --- Register Route එක ---
+// --- Register Route ---
 app.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body;
         const newUser = new User({ email, password });
         await newUser.save();
-        res.status(201).send({ message: "Register වීම සාර්ථකයි! දැන් Login වෙන්න." });
+        res.status(201).send({ message: "Registration successful! Please login." });
     } catch (err) {
-        res.status(400).send({ message: "මේ Email එක දැනටමත් පාවිච්චි කරලා තියෙන්නේ!" });
+        res.status(400).send({ message: "This email is already in use!" });
     }
 });
 
-// --- Login Route එක (Database එකෙන් පරීක්ෂා කරන විදිහ) ---
+// --- Login Route ---
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        // Database එකේ ඇත්තටම මේ email එකයි password එකයි තියෙනවද බලනවා
+        // Checking if email and password match in the database
         const user = await User.findOne({ email: email, password: password });
 
         if (user) {
-            res.status(200).send({ message: "සාර්ථකව Login වුණා!" });
+            res.status(200).send({ message: "Logged in successfully!" });
         } else {
-            res.status(401).send({ message: "Email හෝ Password වැරදියි!" });
+            res.status(401).send({ message: "Invalid email or password!" });
         }
     } catch (err) {
-        res.status(500).send({ message: "Server Error එකක් ආවා!" });
+        res.status(500).send({ message: "Server error occurred!" });
     }
 });
 
-// Server එක දුවන Port එක
+// Server running port
 app.listen(5000, () => {
-    console.log("Server එක Port 5000 එකේ වැඩ කරනවා...");
+    console.log("Server is running on port 5000...");
 });
-

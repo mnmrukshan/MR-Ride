@@ -10,7 +10,7 @@ function Home() {
   const accentColor = "#00d1b2"; 
 
   const vehicles = [
-    // --- Your original 27 vehicle data stays here (Unchanged) ---
+    // --- Your original 27 vehicles data stays here. (Unchanged) ---
     { id: 1, name: "Suzuki Alto", type: "Car", price: 8500, fuel: "Petrol", location: "Panadura", kmLimit: "100 KM", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpwTprI6Gk3lkY_RX-1-qig6A6O948klQIxQ&s" },
     { id: 2, name: "Suzuki Wagon-R", type: "Car", price: 9500, fuel: "Hybrid", location: "Nugegoda", kmLimit: "100 KM", img: "https://i.redd.it/2a8a1kk52klc1.jpeg" },
     { id: 3, name: "Toyota Premio", type: "Car", price: 18000, fuel: "Petrol", location: "Colombo", kmLimit: "100 KM", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCGP51J1PM9zB2XpY1nVfQ_LLPBxfa-PcyOA&s" },
