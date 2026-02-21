@@ -1,19 +1,37 @@
 import React, { useState } from 'react';
-import myLogo from './logo2.png'; 
-import Footer from './Footer'; 
+import { useLocation, useNavigate } from 'react-router-dom'; // 👈 useLocation and useNavigate added
+import myLogo from './logo2.png';
+import Footer from './Footer';
 
 function Home() {
+  const location = useLocation(); // 👈 To identify the current page
+  const navigate = useNavigate(); // 👈 For professional navigation
   const userName = localStorage.getItem("userName") || "Guest";
   const [category, setCategory] = useState("All");
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [maxPrice, setMaxPrice] = useState(30000); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [maxPrice, setMaxPrice] = useState(30000);
 
   // --- NEW STATES FOR BOOKING MODAL ---
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [bookingDate, setBookingDate] = useState("");
   const [bookingTime, setBookingTime] = useState("");
 
-  const accentColor = "#00d1b2"; 
+  const accentColor = "#00d1b2";
+  
+  // Professional Nav Style logic
+  const getNavLinkStyle = (path) => ({
+    background: 'none',
+    border: 'none',
+    borderBottom: location.pathname === path ? `2px solid ${accentColor}` : 'none', // 👈 Active underline
+    color: location.pathname === path ? accentColor : 'white', // 👈 Active color
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    fontSize: '1rem',
+    paddingBottom: '5px',
+    transition: '0.3s',
+    marginLeft: '20px'
+  });
+
   const logoutButtonStyle = {
     background: 'rgba(255, 255, 255, 0.05)',
     color: 'white',
@@ -60,7 +78,7 @@ function Home() {
     { id: 27, name: "Suzuki Gixxer", type: "Bike", price: 5800, fuel: "Petrol", location: "Colombo", kmLimit: "Unlimited", img: "https://fasterwheeler.com/product_images/webp/suzuki-gixxer-2026-final.webp" }
   ];
 
-  const filteredVehicles = vehicles.filter(v => 
+  const filteredVehicles = vehicles.filter(v =>
     (category === "All" || v.type === category) &&
     (v.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (v.price <= maxPrice)
@@ -71,41 +89,76 @@ function Home() {
     window.location.href = "/";
   };
 
-  const handleBookingSubmit = (e) => {
+  const handleBookingSubmit = async (e) => {
     e.preventDefault();
-    // Smooth navigation placeholder - closing modal with success state
-    alert(`Successfully Booked ${selectedVehicle.name} for ${bookingDate} at ${bookingTime}!`);
-    setSelectedVehicle(null);
+
+    const bookingData = {
+      userEmail: userName,
+      vehicleName: selectedVehicle.name,
+      pickupDate: bookingDate,
+      pickupTime: bookingTime
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        alert(`Successfully Reserved: ${selectedVehicle.name} for ${bookingDate}`);
+        setSelectedVehicle(null);
+        setBookingDate("");
+        setBookingTime("");
+      } else {
+        alert("Booking failed! Please try again.");
+      }
+    } catch (error) {
+      alert("Server error! Make sure your backend is running on port 5000.");
+    }
   };
 
   return (
     <div style={{ backgroundColor: '#071618', minHeight: '100vh', color: 'white', fontFamily: 'Poppins, sans-serif' }}>
-      
+     
       {/* Navbar Section */}
-      <nav style={{ 
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-        padding: '15px 40px', background: 'rgba(255, 255, 255, 0.03)', 
+      <nav style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        padding: '15px 40px', background: 'rgba(255, 255, 255, 0.03)',
         backdropFilter: 'blur(15px)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         position: 'sticky', top: 0, zIndex: 1000, boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <img src={myLogo} alt="Logo" style={{ height: '45px', width: 'auto' }} />
           <h2 style={{ color: accentColor, margin: 0, letterSpacing: '2px', fontWeight: '800' }}>MR RIDE</h2>
+          
+          {/* Professional Navigation Buttons with Active State */}
+          <div style={{ display: 'flex', gap: '20px', marginLeft: '30px' }}>
+            <button 
+                onClick={() => navigate("/home")} 
+                style={getNavLinkStyle("/home")}
+            >Home</button>
+            <button 
+                onClick={() => navigate("/my-bookings")} 
+                style={getNavLinkStyle("/my-bookings")}
+            >My Bookings</button>
+          </div>
         </div>
 
         <div style={{ flex: 1, maxWidth: '400px', margin: '0 30px', position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <input 
-            type="text" 
-            placeholder="Search your favorite ride..." 
+          <input
+            type="text"
+            placeholder="Search your favorite ride..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ 
+            style={{
               width: '100%', padding: '10px 45px 10px 20px', borderRadius: '25px', border: '1px solid rgba(255,255,255,0.2)',
               background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none'
             }}
           />
           {searchTerm && (
-            <button 
+            <button
               onClick={() => setSearchTerm("")}
               style={{ position: 'absolute', right: '15px', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: '18px', cursor: 'pointer' }}
             >✕</button>
@@ -113,12 +166,12 @@ function Home() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '12px', 
-            background: 'rgba(255, 255, 255, 0.05)', 
-            padding: '5px 15px 5px 8px', 
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            padding: '5px 15px 5px 8px',
             borderRadius: '20px',
             border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
@@ -130,8 +183,8 @@ function Home() {
             </span>
           </div>
 
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             style={logoutButtonStyle}
             onMouseOver={(e) => {
               e.target.style.background = 'rgba(255, 255, 255, 0.15)';
@@ -154,11 +207,11 @@ function Home() {
       {/* Hero Section */}
       <div style={{ textAlign: 'center', padding: '60px 20px' }}>
         <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '10px' }}>Find Your <span style={{color: accentColor}}>Perfect Ride</span></h1>
-        
+       
         <div style={{ margin: '30px auto', maxWidth: '300px' }}>
           <p style={{ marginBottom: '10px', color: 'rgba(255,255,255,0.6)' }}>Max Price: <span style={{color: accentColor, fontWeight: 'bold'}}>LKR {maxPrice}</span></p>
-          <input 
-            type="range" min="3000" max="30000" step="500" 
+          <input
+            type="range" min="3000" max="30000" step="500"
             value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
             style={{ width: '100%', accentColor: accentColor }}
           />
@@ -166,11 +219,11 @@ function Home() {
 
         <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
           {["All", "Car", "Bike", "Van"].map(cat => (
-            <button 
-              key={cat} 
-              onClick={() => setCategory(cat)} 
-              style={{ 
-                padding: '12px 40px', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)', 
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              style={{
+                padding: '12px 40px', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)',
                 backgroundColor: category === cat ? accentColor : 'rgba(255, 255, 255, 0.05)',
                 color: category === cat ? '#071618' : 'white', cursor: 'pointer', fontWeight: 'bold',
                 backdropFilter: 'blur(10px)', transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
@@ -204,7 +257,7 @@ function Home() {
               <p style={{ color: 'rgba(255,255,255,0.5)' }}>⛽ {vehicle.fuel} • 📍 {vehicle.location}</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
                 <span style={{ fontSize: '1.6rem', fontWeight: '900', color: accentColor }}>LKR {vehicle.price}</span>
-                <button 
+                <button
                   onClick={() => setSelectedVehicle(vehicle)}
                   style={{ backgroundColor: 'rgba(0, 209, 178, 0.1)', color: accentColor, border: `1px solid ${accentColor}`, padding: '12px 25px', borderRadius: '15px', fontWeight: '900', backdropFilter: 'blur(5px)', cursor: 'pointer', transition: '0.3s' }}
                   onMouseOver={(e) => { e.target.style.backgroundColor = accentColor; e.target.style.color = '#071618'; e.target.style.boxShadow = `0 0 20px ${accentColor}66`; }}
@@ -220,57 +273,57 @@ function Home() {
 
       {/* --- ANIMATED BOOKING MODAL (DARK GLASS LOOK) --- */}
       {selectedVehicle && (
-        <div style={{ 
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
-          background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(15px)', 
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(15px)',
           display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000,
           animation: 'fadeIn 0.3s ease-out'
         }}>
-          <div style={{ 
-            background: 'rgba(255, 255, 255, 0.03)', padding: '45px', borderRadius: '35px', 
-            border: '1px solid rgba(255, 255, 255, 0.12)', width: '90%', maxWidth: '460px', 
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.03)', padding: '45px', borderRadius: '35px',
+            border: '1px solid rgba(255, 255, 255, 0.12)', width: '90%', maxWidth: '460px',
             textAlign: 'center', boxShadow: '0 30px 70px rgba(0,0,0,0.7)',
             animation: 'slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
           }}>
             <h2 style={{ color: accentColor, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '2.5px', fontWeight: '900' }}>Reserve Ride</h2>
             <p style={{ opacity: 0.5, marginBottom: '35px', fontSize: '0.95rem' }}>Selected: <strong style={{color: 'white'}}>{selectedVehicle.name}</strong></p>
-            
+           
             <form onSubmit={handleBookingSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
               <div style={{ textAlign: 'left' }}>
                 <label style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '8px', display: 'block', color: accentColor, fontWeight: 'bold' }}>Pickup Date</label>
-                <input 
-                  type="date" required value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} 
-                  style={{ 
-                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', 
-                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s', 
-                    colorScheme: 'dark', accentColor: accentColor 
-                  }} 
-                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} 
+                <input
+                  type="date" required value={bookingDate} onChange={(e) => setBookingDate(e.target.value)}
+                  style={{
+                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s',
+                    colorScheme: 'dark', accentColor: accentColor
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
                 />
               </div>
               <div style={{ textAlign: 'left' }}>
                 <label style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '8px', display: 'block', color: accentColor, fontWeight: 'bold' }}>Pickup Time</label>
-                <input 
-                  type="time" required value={bookingTime} onChange={(e) => setBookingTime(e.target.value)} 
-                  style={{ 
-                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', 
-                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s', 
-                    colorScheme: 'dark', accentColor: accentColor 
-                  }} 
-                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} 
+                <input
+                  type="time" required value={bookingTime} onChange={(e) => setBookingTime(e.target.value)}
+                  style={{
+                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s',
+                    colorScheme: 'dark', accentColor: accentColor
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
                 />
               </div>
-              
+             
               <div style={{ display: 'flex', gap: '20px', marginTop: '15px' }}>
-                <button 
-                  type="button" 
-                  onClick={() => setSelectedVehicle(null)} 
-                  style={{ flex: 1, padding: '15px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', fontWeight: 'bold' }} 
+                <button
+                  type="button"
+                  onClick={() => setSelectedVehicle(null)}
+                  style={{ flex: 1, padding: '15px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', fontWeight: 'bold' }}
                   onMouseDown={(e) => e.target.style.transform = 'scale(0.92)'} onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
                 >Cancel</button>
-                <button 
-                  type="submit" 
-                  style={{ flex: 2, padding: '15px', background: accentColor, border: 'none', color: '#071618', fontWeight: '900', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', boxShadow: `0 10px 25px ${accentColor}44` }} 
+                <button
+                  type="submit"
+                  style={{ flex: 2, padding: '15px', background: accentColor, border: 'none', color: '#071618', fontWeight: '900', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', boxShadow: `0 10px 25px ${accentColor}44` }}
                   onMouseDown={(e) => e.target.style.transform = 'scale(0.92)'} onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
                 >Confirm</button>
               </div>
@@ -283,7 +336,7 @@ function Home() {
         </div>
       )}
 
-      <Footer /> 
+      <Footer />
     </div>
   );
 }
