@@ -5,6 +5,7 @@ import './App.css';
 import Home from './Home'; 
 import myLogo from './logo2.png'; 
 import MyBookings from './MyBookings';
+import AdminDashboard from './AdminDashboard';
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
 
-  const accentColor = "#00d1b2"; // Your theme emerald color
+  const accentColor = "#00d1b2"; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,21 +38,20 @@ function LoginPage() {
     }
   };
 
-  // Modern Glassy Button Style
   const glassButtonStyle = {
     width: '100%',
-    padding: '14px',
+    padding: '16px',
     borderRadius: '15px',
-    border: `1px solid ${accentColor}`,
+    border: `2px solid ${accentColor}`,
     background: 'rgba(0, 209, 178, 0.1)',
     color: accentColor,
-    fontSize: '1.1rem',
+    fontSize: '1.2rem',
     fontWeight: '900',
     cursor: 'pointer',
     backdropFilter: 'blur(5px)',
     transition: 'all 0.3s ease',
     textTransform: 'uppercase',
-    letterSpacing: '1px',
+    letterSpacing: '2px',
     marginTop: '20px',
     outline: 'none'
   };
@@ -69,7 +69,7 @@ function LoginPage() {
           <div className="input-group">
             <input 
               type="email" 
-              className="styled-input"
+              className="styled-input" // Fixed to use CSS class for autofill fix
               placeholder="Email Address" 
               onChange={(e) => setEmail(e.target.value)} 
               value={email}
@@ -87,7 +87,6 @@ function LoginPage() {
             />
           </div>
 
-          {/* Optimized Glassmorphism Button */}
           <button 
             type="submit" 
             style={glassButtonStyle}
@@ -132,6 +131,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

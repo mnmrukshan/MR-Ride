@@ -14,11 +14,11 @@
   max-width: 400px;
   text-align: center;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.05); /* Transparent background */
-  backdrop-filter: blur(15px); /* The "Glass" blur effect */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
@@ -31,13 +31,11 @@ h2 {
   font-weight: 600;
 }
 
-/* Input group styling */
 .input-group {
   position: relative;
   margin-bottom: 25px;
 }
 
-/* Styled text input field with glass effect */
 .styled-input {
   width: 100%;
   padding: 15px 20px;
@@ -59,13 +57,21 @@ h2 {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Primary Login Button */
+/* ✅ NEW: FIX FOR WHITE AUTOFILL BOX */
+.styled-input:-webkit-autofill,
+.styled-input:-webkit-autofill:hover, 
+.styled-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .login-btn {
   width: 100%;
   padding: 15px;
   border-radius: 12px;
   border: none;
-  background: #00ffcc; /* Bright accent color */
+  background: #00ffcc;
   color: #0b2225;
   font-weight: bold;
   font-size: 16px;
