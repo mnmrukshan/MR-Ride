@@ -143,6 +143,12 @@ function Home() {
                 onClick={() => navigate("/my-bookings")} 
                 style={getNavLinkStyle("/my-bookings")}
             >My Bookings</button>
+            {userName === "mnmrukshan22" && (
+    <button 
+        onClick={() => navigate("/admin")} 
+        style={getNavLinkStyle("/admin")}
+    >Admin Panel</button>
+  )}
           </div>
         </div>
 

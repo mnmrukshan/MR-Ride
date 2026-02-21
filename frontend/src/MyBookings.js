@@ -3,10 +3,11 @@ import Footer from './Footer';
 
 function MyBookings() {
     const [bookings, setBookings] = useState([]);
+    const [showNote, setShowNote] = useState(false); // Success Notification state
     const userEmail = localStorage.getItem("userName"); 
     const accentColor = "#00d1b2";
 
-    // --- NEW: FETCH BOOKINGS ---
+    // --- FETCH BOOKINGS ---
     useEffect(() => {
         if (userEmail) {
             fetch(`http://localhost:5000/api/my-bookings/${userEmail}`)
@@ -16,26 +17,47 @@ function MyBookings() {
         }
     }, [userEmail]);
 
-    // --- NEW: DELETE FUNCTION ---
+    // --- UPDATED DELETE FUNCTION WITH NOTIFICATION ---
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to cancel this booking?")) {
             try {
                 const response = await fetch(`http://localhost:5000/api/book/${id}`, { 
                     method: 'DELETE' 
                 });
+
                 if (response.ok) {
-                    alert("Booking Cancelled!");
-                    // Filter out the deleted booking from UI instead of full reload for better speed
+                    setShowNote(true); // Show notification
+                    // Filter out the deleted booking from UI instantly
                     setBookings(bookings.filter(booking => booking._id !== id));
+                    // Hide notification after 3 seconds
+                    setTimeout(() => setShowNote(false), 3000);
+                } else {
+                    alert("Failed to delete from server!");
                 }
             } catch (err) {
-                alert("Error deleting booking!");
+                console.error("Delete Error:", err);
+                alert("Server connection error!");
             }
         }
     };
 
     return (
         <div style={{ backgroundColor: '#071618', minHeight: '100vh', color: 'white', fontFamily: 'Poppins, sans-serif' }}>
+            
+            {/* --- SUCCESS NOTIFICATION --- */}
+            {showNote && (
+                <div style={{ 
+                    position: 'fixed', top: '20px', right: '20px', 
+                    background: accentColor, color: '#071618', 
+                    padding: '15px 25px', borderRadius: '12px', 
+                    fontWeight: 'bold', zIndex: 3000,
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                    animation: 'slideIn 0.5s ease'
+                }}>
+                    ✅ Your reservation has been cancelled successfully!
+                </div>
+            )}
+
             <div style={{ padding: '80px 40px' }}>
                 <h1 style={{ textAlign: 'center', marginBottom: '50px', fontSize: '2.5rem', fontWeight: '800' }}>
                     My <span style={{color: accentColor}}>Reservations</span>
@@ -64,7 +86,6 @@ function MyBookings() {
                                     STATUS: PENDING
                                 </div>
                                 
-                                {/* --- NEW: DELETE BUTTON --- */}
                                 <button 
                                     onClick={() => handleDelete(booking._id)}
                                     style={{
@@ -99,6 +120,12 @@ function MyBookings() {
                 </div>
             </div>
             <Footer />
+            <style>{`
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `}</style>
         </div>
     );
 }
