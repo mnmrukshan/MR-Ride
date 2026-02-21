@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import myLogo from './logo1.png'; 
+import myLogo from './logo2.png'; 
 import Footer from './Footer'; 
 
 function Home() {
@@ -7,6 +7,11 @@ function Home() {
   const [category, setCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState(""); 
   const [maxPrice, setMaxPrice] = useState(30000); 
+
+  // --- NEW STATES FOR BOOKING MODAL ---
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingTime, setBookingTime] = useState("");
 
   const accentColor = "#00d1b2"; 
   const logoutButtonStyle = {
@@ -66,6 +71,13 @@ function Home() {
     window.location.href = "/";
   };
 
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    // Smooth navigation placeholder - closing modal with success state
+    alert(`Successfully Booked ${selectedVehicle.name} for ${bookingDate} at ${bookingTime}!`);
+    setSelectedVehicle(null);
+  };
+
   return (
     <div style={{ backgroundColor: '#071618', minHeight: '100vh', color: 'white', fontFamily: 'Poppins, sans-serif' }}>
       
@@ -101,7 +113,6 @@ function Home() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          {/* New Optimized User Welcome Section */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -111,18 +122,7 @@ function Home() {
             borderRadius: '20px',
             border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: accentColor,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: '#071618',
-              fontWeight: 'bold',
-              fontSize: '14px'
-            }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: accentColor, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#071618', fontWeight: 'bold', fontSize: '14px' }}>
               {userName.charAt(0).toUpperCase()}
             </div>
             <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>
@@ -143,12 +143,8 @@ function Home() {
               e.target.style.transform = 'scale(1)';
               e.target.style.boxShadow = 'none';
             }}
-            onMouseDown={(e) => {
-              e.target.style.transform = 'scale(0.95)';
-            }}
-            onMouseUp={(e) => {
-              e.target.style.transform = 'scale(1.05)';
-            }}
+            onMouseDown={(e) => e.target.style.transform = 'scale(0.95)'}
+            onMouseUp={(e) => e.target.style.transform = 'scale(1.05)'}
           >
             Logout
           </button>
@@ -193,63 +189,26 @@ function Home() {
       {/* Grid Section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', padding: '0 60px 100px' }}>
         {filteredVehicles.map(vehicle => (
-          <div key={vehicle.id} style={{ 
-            background: 'rgba(255, 255, 255, 0.02)', borderRadius: '30px', 
-            overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)', 
-            backdropFilter: 'blur(20px)', transition: 'all 0.4s ease', cursor: 'pointer'
-          }}
+          <div key={vehicle.id} style={{ background: 'rgba(255, 255, 255, 0.02)', borderRadius: '30px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(20px)', transition: 'all 0.4s ease', cursor: 'pointer' }}
           onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-15px)'; e.currentTarget.style.boxShadow = `0 20px 40px rgba(0, 209, 178, 0.2)`; }}
           onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
           >
             <div style={{ position: 'relative' }}>
               <img src={vehicle.img} alt={vehicle.name} style={{ width: '100%', height: '230px', objectFit: 'cover' }} />
-              
-              <div style={{
-                position: 'absolute',
-                top: '15px',
-                left: '15px',
-                background: 'rgba(0, 209, 178, 0.15)', 
-                backdropFilter: 'blur(12px)',
-                padding: '6px 14px',
-                borderRadius: '12px',
-                border: '1px solid rgba(0, 209, 178, 0.4)',
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                color: '#00d1b2',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
-                zIndex: 5
-              }}>
+              <div style={{ position: 'absolute', top: '15px', left: '15px', background: 'rgba(0, 209, 178, 0.15)', backdropFilter: 'blur(12px)', padding: '6px 14px', borderRadius: '12px', border: '1px solid rgba(0, 209, 178, 0.4)', fontSize: '0.75rem', fontWeight: 'bold', color: '#00d1b2', boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)', zIndex: 5 }}>
                 ⚡ {vehicle.kmLimit}
               </div>
             </div>
-
             <div style={{ padding: '30px' }}>
               <h3 style={{ margin: '0 0 10px 0', fontSize: '1.5rem' }}>{vehicle.name}</h3>
               <p style={{ color: 'rgba(255,255,255,0.5)' }}>⛽ {vehicle.fuel} • 📍 {vehicle.location}</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
                 <span style={{ fontSize: '1.6rem', fontWeight: '900', color: accentColor }}>LKR {vehicle.price}</span>
-                
-                <button style={{ 
-                  backgroundColor: 'rgba(0, 209, 178, 0.1)', 
-                  color: accentColor, 
-                  border: `1px solid ${accentColor}`, 
-                  padding: '12px 25px', 
-                  borderRadius: '15px', 
-                  fontWeight: '900',
-                  backdropFilter: 'blur(5px)',
-                  cursor: 'pointer',
-                  transition: '0.3s'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.backgroundColor = accentColor;
-                  e.target.style.color = '#071618';
-                  e.target.style.boxShadow = `0 0 20px ${accentColor}66`;
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.backgroundColor = 'rgba(0, 209, 178, 0.1)';
-                  e.target.style.color = accentColor;
-                  e.target.style.boxShadow = 'none';
-                }}
+                <button 
+                  onClick={() => setSelectedVehicle(vehicle)}
+                  style={{ backgroundColor: 'rgba(0, 209, 178, 0.1)', color: accentColor, border: `1px solid ${accentColor}`, padding: '12px 25px', borderRadius: '15px', fontWeight: '900', backdropFilter: 'blur(5px)', cursor: 'pointer', transition: '0.3s' }}
+                  onMouseOver={(e) => { e.target.style.backgroundColor = accentColor; e.target.style.color = '#071618'; e.target.style.boxShadow = `0 0 20px ${accentColor}66`; }}
+                  onMouseOut={(e) => { e.target.style.backgroundColor = 'rgba(0, 209, 178, 0.1)'; e.target.style.color = accentColor; e.target.style.boxShadow = 'none'; }}
                 >
                   BOOK NOW
                 </button>
@@ -258,6 +217,71 @@ function Home() {
           </div>
         ))}
       </div>
+
+      {/* --- ANIMATED BOOKING MODAL (DARK GLASS LOOK) --- */}
+      {selectedVehicle && (
+        <div style={{ 
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+          background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(15px)', 
+          display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000,
+          animation: 'fadeIn 0.3s ease-out'
+        }}>
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.03)', padding: '45px', borderRadius: '35px', 
+            border: '1px solid rgba(255, 255, 255, 0.12)', width: '90%', maxWidth: '460px', 
+            textAlign: 'center', boxShadow: '0 30px 70px rgba(0,0,0,0.7)',
+            animation: 'slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          }}>
+            <h2 style={{ color: accentColor, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '2.5px', fontWeight: '900' }}>Reserve Ride</h2>
+            <p style={{ opacity: 0.5, marginBottom: '35px', fontSize: '0.95rem' }}>Selected: <strong style={{color: 'white'}}>{selectedVehicle.name}</strong></p>
+            
+            <form onSubmit={handleBookingSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              <div style={{ textAlign: 'left' }}>
+                <label style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '8px', display: 'block', color: accentColor, fontWeight: 'bold' }}>Pickup Date</label>
+                <input 
+                  type="date" required value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} 
+                  style={{ 
+                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', 
+                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s', 
+                    colorScheme: 'dark', accentColor: accentColor 
+                  }} 
+                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} 
+                />
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <label style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '8px', display: 'block', color: accentColor, fontWeight: 'bold' }}>Pickup Time</label>
+                <input 
+                  type="time" required value={bookingTime} onChange={(e) => setBookingTime(e.target.value)} 
+                  style={{ 
+                    width: '100%', padding: '16px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', 
+                    borderRadius: '16px', color: 'white', outline: 'none', transition: '0.3s', 
+                    colorScheme: 'dark', accentColor: accentColor 
+                  }} 
+                  onFocus={(e) => e.target.style.borderColor = accentColor} onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} 
+                />
+              </div>
+              
+              <div style={{ display: 'flex', gap: '20px', marginTop: '15px' }}>
+                <button 
+                  type="button" 
+                  onClick={() => setSelectedVehicle(null)} 
+                  style={{ flex: 1, padding: '15px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', fontWeight: 'bold' }} 
+                  onMouseDown={(e) => e.target.style.transform = 'scale(0.92)'} onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+                >Cancel</button>
+                <button 
+                  type="submit" 
+                  style={{ flex: 2, padding: '15px', background: accentColor, border: 'none', color: '#071618', fontWeight: '900', borderRadius: '18px', cursor: 'pointer', transition: '0.2s', boxShadow: `0 10px 25px ${accentColor}44` }} 
+                  onMouseDown={(e) => e.target.style.transform = 'scale(0.92)'} onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+                >Confirm</button>
+              </div>
+            </form>
+          </div>
+          <style>{`
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+          `}</style>
+        </div>
+      )}
 
       <Footer /> 
     </div>
