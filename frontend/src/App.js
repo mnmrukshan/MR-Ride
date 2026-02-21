@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css'; 
 import Home from './Home'; 
-import myLogo from './logo1.png'; 
+import myLogo from './logo2.png'; 
 
 function LoginPage() {
   const [email, setEmail] = useState("");
