@@ -20,13 +20,14 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
-// --- NEW: Booking Model ---
+// --- Booking Model (Updated with Status) ---
 const BookingSchema = new mongoose.Schema({
     userEmail: { type: String, required: true },
     vehicleName: { type: String, required: true },
     pickupDate: { type: String, required: true },
     pickupTime: { type: String, required: true },
-    bookingDate: { type: Date, default: Date.now } // Record when the booking was made
+    status: { type: String, default: "Pending" }, // Default status for new bookings
+    bookingDate: { type: Date, default: Date.now } 
 });
 const Booking = mongoose.model('Booking', BookingSchema);
 
@@ -58,7 +59,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// --- NEW: Booking Route (POST) ---
+// --- Booking Route (POST) ---
 app.post('/api/book', async (req, res) => {
     try {
         const { userEmail, vehicleName, pickupDate, pickupTime } = req.body;
@@ -77,8 +78,7 @@ app.post('/api/book', async (req, res) => {
     }
 });
 
-// --- NEW: Fetch My Bookings (GET) ---
-// This allows the user to see their own bookings based on email
+// --- Fetch My Bookings (GET) ---
 app.get('/api/my-bookings/:email', async (req, res) => {
     try {
         const email = req.params.email;
@@ -88,13 +88,36 @@ app.get('/api/my-bookings/:email', async (req, res) => {
         res.status(500).send({ message: "Error fetching bookings!" });
     }
 });
+
+// --- Fetch ALL Bookings for Admin (GET) ---
+app.get('/api/admin/all-bookings', async (req, res) => {
+    try {
+        const allBookings = await Booking.find().sort({ bookingDate: -1 }); 
+        res.status(200).json(allBookings);
+    } catch (err) {
+        res.status(500).send({ message: "Error fetching all bookings!" });
+    }
+});
+
+// --- Update Booking Status (PATCH) ---
+app.patch('/api/book/status/:id', async (req, res) => {
+    try {
+        const { status } = req.body; 
+        await Booking.findByIdAndUpdate(req.params.id, { status: status });
+        res.status(200).send({ message: `Booking ${status} successfully!` });
+    } catch (err) {
+        res.status(500).send({ message: "Failed to update status!" });
+    }
+});
+
 // --- DELETE BOOKING API ---
 app.delete('/api/book/:id', async (req, res) => {
     try {
-        await Booking.findByIdAndDelete(req.params.id);
-        res.status(200).send({ message: "Booking deleted successfully!" });
+        const id = req.params.id;
+        await Booking.findByIdAndDelete(id); 
+        res.status(200).send({ message: "Deleted successfully" });
     } catch (err) {
-        res.status(500).send({ message: "Failed to delete booking!" });
+        res.status(500).send({ message: "Error deleting booking" });
     }
 });
 
