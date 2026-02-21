@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css'; 
 import Home from './Home'; 
 import myLogo from './logo2.png'; 
+import MyBookings from './MyBookings';
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -130,6 +131,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
       </Routes>
     </Router>
   );
