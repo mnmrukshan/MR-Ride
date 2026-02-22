@@ -20,16 +20,26 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
-// --- Booking Model (Updated with Status) ---
+// --- Booking Model (Updated with Phone) ---
 const BookingSchema = new mongoose.Schema({
     userEmail: { type: String, required: true },
+    phone: { type: String, required: true }, // 👈 NEW: Phone number field added
     vehicleName: { type: String, required: true },
     pickupDate: { type: String, required: true },
     pickupTime: { type: String, required: true },
-    status: { type: String, default: "Pending" }, // Default status for new bookings
+    status: { type: String, default: "Pending" }, 
     bookingDate: { type: Date, default: Date.now } 
 });
 const Booking = mongoose.model('Booking', BookingSchema);
+
+// --- Vehicle Model ---
+const VehicleSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    type: { type: String, required: true },
+    price: { type: Number, required: true },
+    img: { type: String, required: true } 
+});
+const Vehicle = mongoose.model('Vehicle', VehicleSchema);
 
 // --- Register Route ---
 app.post('/register', async (req, res) => {
@@ -59,13 +69,14 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// --- Booking Route (POST) ---
+// --- Booking Route (POST - Updated with Phone) ---
 app.post('/api/book', async (req, res) => {
     try {
-        const { userEmail, vehicleName, pickupDate, pickupTime } = req.body;
+        const { userEmail, phone, vehicleName, pickupDate, pickupTime } = req.body; // 👈 NEW: Destructured phone from body
         
         const newBooking = new Booking({
             userEmail,
+            phone, // 👈 NEW: Saved phone to database
             vehicleName,
             pickupDate,
             pickupTime
@@ -118,6 +129,51 @@ app.delete('/api/book/:id', async (req, res) => {
         res.status(200).send({ message: "Deleted successfully" });
     } catch (err) {
         res.status(500).send({ message: "Error deleting booking" });
+    }
+});
+
+// --- Vehicle APIs for Admin Inventory Management ---
+
+// Fetch all vehicles
+app.get('/api/vehicles', async (req, res) => {
+    try {
+        const vehicles = await Vehicle.find();
+        res.json(vehicles);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching vehicles" });
+    }
+});
+
+// Add a new vehicle
+app.post('/api/admin/add-vehicle', async (req, res) => {
+    try {
+        const { name, type, price, img } = req.body;
+        const newVehicle = new Vehicle({ name, type, price, img });
+        await newVehicle.save();
+        res.status(201).json({ message: "Vehicle added successfully!" });
+    } catch (err) {
+        res.status(500).json({ message: "Error adding vehicle" });
+    }
+});
+
+// Update vehicle details (Edit price or name)
+app.patch('/api/admin/vehicle/:id', async (req, res) => {
+    try {
+        const { price, name } = req.body;
+        await Vehicle.findByIdAndUpdate(req.params.id, { name, price });
+        res.json({ message: "Vehicle updated successfully!" });
+    } catch (err) {
+        res.status(500).json({ message: "Update failed" });
+    }
+});
+
+// Delete vehicle from inventory
+app.delete('/api/admin/vehicle/:id', async (req, res) => {
+    try {
+        await Vehicle.findByIdAndDelete(req.params.id);
+        res.json({ message: "Vehicle removed from inventory!" });
+    } catch (err) {
+        res.status(500).json({ message: "Error deleting vehicle" });
     }
 });
 
