@@ -27,9 +27,7 @@ function MyBookings() {
 
                 if (response.ok) {
                     setShowNote(true); // Show notification
-                    // Filter out the deleted booking from UI instantly
                     setBookings(bookings.filter(booking => booking._id !== id));
-                    // Hide notification after 3 seconds
                     setTimeout(() => setShowNote(false), 3000);
                 } else {
                     alert("Failed to delete from server!");
@@ -78,13 +76,22 @@ function MyBookings() {
                             </div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
-                                <div style={{ 
-                                    background: 'rgba(0, 209, 178, 0.1)', padding: '8px 15px', 
-                                    borderRadius: '10px', color: accentColor, fontSize: '0.75rem', 
-                                    fontWeight: '900', border: `1px solid ${accentColor}44` 
+                                
+                                {/* ✅ පියවර 1: Dynamic Status Button එක මෙලෙස ඇතුළත් කළා */}
+                                <button style={{ 
+                                    background: 'rgba(255, 255, 255, 0.05)', 
+                                    padding: '8px 15px', 
+                                    borderRadius: '10px', 
+                                    fontSize: '0.75rem', 
+                                    fontWeight: '900', 
+                                    cursor: 'default',
+                                    border: '1px solid',
+                                    transition: '0.3s',
+                                    color: booking.status === 'Approved' ? '#00d1b2' : booking.status === 'Rejected' ? '#ff4444' : '#ffcc00',
+                                    borderColor: booking.status === 'Approved' ? '#00d1b2' : booking.status === 'Rejected' ? '#ff4444' : '#ffcc00'
                                 }}>
-                                    STATUS: PENDING
-                                </div>
+                                    STATUS: {booking.status ? booking.status.toUpperCase() : 'PENDING'}
+                                </button>
                                 
                                 <button 
                                     onClick={() => handleDelete(booking._id)}
